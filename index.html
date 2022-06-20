@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      body{
+        margin: 0;
+      }
+      html,body{
+        height: 100%;
+      }
+      #root {
+          position: relative;
+          overflow: auto;
+          height: 100%;
+      }
+      
+      #root2 {
+          position: relative;
+          overflow: auto;
+          height: 300px;
+      }
+      
+      .scroll-anchor-nav {
+          position: absolute;
+          right: 40px;
+          top: 50%;
+          transform: translateY(-50%);
+          padding: 0;
+      }
+      
+      .d2 .scroll-anchor-nav {
+          top: 80%;
+      }
+      
+      .scroll-anchor-nav li {
+          font-size: 14px;
+      }
+      
+      .scroll-anchor-nav li.active {
+          font-size: 18px;
+      }
+      
+      ul {
+          list-style: none;
+      }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <ul>
+            <li class="item" data-anchor="A">
+                <h4>A</h4>
+                <div>a1</div>
+                <div>a2</div>
+                <div>a3</div>
+                <div>a4</div>
+            </li>
+            <li class="item" data-anchor="B">
+                <h4>B</h4>
+                <div>b1</div>
+                <div>b2</div>
+                <div>b3</div>
+                <div>b4</div>
+            </li>
+            <li class="item" data-anchor="C">
+                <h4>C</h4>
+                <div>c1</div>
+                <div>c2</div>
+                <div>c3</div>
+                <div>c4</div>
+                <div>c5</div>
+                <div>c6</div>
+            </li>
+            <li class="item" data-anchor="D">
+                <h4>D</h4>
+                <div>d1</div>
+                <div>d2</div>
+                <div>d3</div>
+                <div>d4</div>
+            </li>
+        </ul>
+    </div>
+    
+    <script src="./dist/scrollanchor.js"></script>
+    <script>
+        var data = [
+            'A', 'B', 'C', 'D'
+        ]
+        var obj = {
+            scrollElement: document.getElementById('root'),
+            navList: data
+        }
+        ScrollAnchor.init(obj)
+        
+    </script>
+
+</body>
+
+</html>
