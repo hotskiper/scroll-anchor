@@ -16,7 +16,7 @@
       #root {
           position: relative;
           overflow: auto;
-          height: 100%;
+          height: 300px;
       }
       
       #root2 {
@@ -28,13 +28,14 @@
       .scroll-anchor-nav {
           position: absolute;
           right: 40px;
-          top: 50%;
-          transform: translateY(-50%);
+          /* top: 50%;
+          transform: translateY(-50%); */
+          top: 100px;
           padding: 0;
       }
       
-      .d2 .scroll-anchor-nav {
-          top: 80%;
+      .d2 {
+          position: relative;
       }
       
       .scroll-anchor-nav li {
@@ -52,7 +53,42 @@
 </head>
 
 <body>
-    <div id="root">
+  <div id="root">
+    <ul>
+        <li class="item" data-anchor="A">
+            <h4>A</h4>
+            <div>a1</div>
+            <div>a2</div>
+            <div>a3</div>
+            <div>a4</div>
+        </li>
+        <li class="item" data-anchor="B">
+            <h4>B</h4>
+            <div>b1</div>
+            <div>b2</div>
+            <div>b3</div>
+            <div>b4</div>
+        </li>
+        <li class="item" data-anchor="C">
+            <h4>C</h4>
+            <div>c1</div>
+            <div>c2</div>
+            <div>c3</div>
+            <div>c4</div>
+            <div>c5</div>
+            <div>c6</div>
+        </li>
+        <li class="item" data-anchor="D">
+            <h4>D</h4>
+            <div>d1</div>
+            <div>d2</div>
+            <div>d3</div>
+            <div>d4</div>
+        </li>
+    </ul>
+</div>
+    <div class="d2">
+      <div id="root2">
         <ul>
             <li class="item" data-anchor="A">
                 <h4>A</h4>
@@ -86,7 +122,7 @@
             </li>
         </ul>
     </div>
-    
+    </div>
     <script src="./dist/scrollanchor.js"></script>
     <script>
         var data = [
@@ -97,7 +133,11 @@
             navList: data
         }
         ScrollAnchor.init(obj)
-        
+        var obj2 = {
+            scrollElement: document.getElementById('root2'),
+            navList: data
+        }
+        ScrollAnchor.init(obj2)
     </script>
 
 </body>

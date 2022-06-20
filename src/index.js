@@ -1,98 +1,111 @@
-let navElement, scrollElement, navList, scrollSetNavActiveFlag = true;
+
 const ANIMATE_TIMES = 20;
 
 export function init(obj) {
-  scrollElement = obj.scrollElement;
-  addDom(obj);
-  initScroll();
-  initClick();
+  const s = new Scroller(obj);
+  s.init();
 }
 
-function addDom(obj){
-  navList = obj.navList;
-  navElement = document.createElement('ul');
-  navElement.className = 'scroll-anchor-nav';
-  let tpl = '';
-  navList.forEach(item => {
-    tpl += `<li>${item}</li>`;
-  });
-  navElement.innerHTML = tpl;
-  scrollElement.after(navElement)
-}
-
-function initScroll(){
-  scrollElement.addEventListener('scroll', throttle(handleScroll, 100))
-}
-
-function handleScroll(){
-  if(scrollSetNavActiveFlag){
-    const scrollTop = scrollElement.scrollTop;
-    const topIndex = getTopIndex(scrollTop);
-    const topLabel = navElement.children[topIndex].innerText;
-    setNavActive(topLabel);
+class Scroller {
+  constructor(props){
+    this.navElement = null;
+    this.scrollElement = props.scrollElement;
+    this.navList = props.navList;
+    this.scrollSetNavActiveFlag = true;
+    this.times = ANIMATE_TIMES;
+    this.step = 0;
   }
-}
 
-function setNavActive(topLabel){
-  for (let i = 0; i < navElement.children.length; i++) {
-    navElement.children[i].setAttribute('class', navElement.children[i].innerText === topLabel ? 'active' : '');
+  init(){
+    this.addDom();
+    this.initScroll();
+    this.initClick();
   }
-}
 
-function getTopIndex(scrollTop){
-  let index;
-  for(let i = 0; i < navList.length ; i++){
-    const element = scrollElement.querySelector(`[data-anchor=${navList[i]}]`);
-    const top = element.offsetTop;
-    if(top > scrollTop){
-      index = i;
-      break;
+  addDom(){
+    this.navElement = document.createElement('ul');
+    this.navElement.className = 'scroll-anchor-nav';
+    let tpl = '';
+    this.navList.forEach(item => {
+      tpl += `<li>${item}</li>`;
+    });
+    this.navElement.innerHTML = tpl;
+    this.scrollElement.after(this.navElement)
+  }
+
+  initScroll(){
+    this.scrollElement.addEventListener('scroll', this.throttle(this.handleScroll.bind(this), 100))
+  }
+
+  handleScroll(){
+    if(this.scrollSetNavActiveFlag){
+      const scrollTop = this.scrollElement.scrollTop;
+      const topIndex = this.getTopIndex(scrollTop);
+      const topLabel = this.navElement.children[topIndex].innerText;
+      this.setNavActive(topLabel);
     }
   }
-  return index;
-}
 
-function initClick(){
-  navElement.addEventListener('click', function(e){
-    scrollSetNavActiveFlag = false;
-    const label = e.target.innerText;
-    setNavActive(label);
-    const element = scrollElement.querySelector(`[data-anchor=${label}]`);
-    const top = element.offsetTop;
-    scrollTo(top);
-  })
-}
+  setNavActive(topLabel){
+    for (let i = 0; i < this.navElement.children.length; i++) {
+      this.navElement.children[i].setAttribute('class', this.navElement.children[i].innerText === topLabel ? 'active' : '');
+    }
+  }
 
-let times = ANIMATE_TIMES;
-let step;
+  getTopIndex(scrollTop){
+    let index;
+    for(let i = 0; i < this.navList.length ; i++){
+      const element = this.scrollElement.querySelector(`[data-anchor=${this.navList[i]}]`);
+      const top = element.offsetTop;
+      if(top > scrollTop){
+        index = i;
+        break;
+      }
+    }
+    return index;
+  }
 
-function scrollTo(top){
-  const currentTop = scrollElement.scrollTop;
-  const gap = top - currentTop;
-  // const durition = 1000;
-  step = gap / times;
-  animateScroll();
-}
+  initClick(){
+    const self = this;
+    this.navElement.addEventListener('click', function(e){
+      this.scrollSetNavActiveFlag = false;
+      const label = e.target.innerText;
+      this.setNavActive(label);
+      const element = this.scrollElement.querySelector(`[data-anchor=${label}]`);
+      const top = element.offsetTop;
+      this.scrollTo(top);
+    }.bind(this))
+  }
 
-function animateScroll(){
-  scrollElement.scrollTop = scrollElement.scrollTop + step;
-  times= times - 1;
-  if(times > 0){
-    window.requestAnimationFrame(animateScroll)
-  } else {
-    times = ANIMATE_TIMES;
-    scrollSetNavActiveFlag = true;
+  scrollTo(top){
+    const currentTop = this.scrollElement.scrollTop;
+    const gap = top - currentTop;
+    // const durition = 1000;
+    this.step = gap / this.times;
+    this.animateScroll();
+  }
+
+  animateScroll(){
+    this.scrollElement.scrollTop = this.scrollElement.scrollTop + this.step;
+    this.times= this.times - 1;
+    if(this.times > 0){
+      window.requestAnimationFrame(this.animateScroll.bind(this))
+    } else {
+      this.times = ANIMATE_TIMES;
+      this.scrollSetNavActiveFlag = true;
+    }
+  }
+
+  throttle(fn, delay) {
+    let flag = true;
+    return () => {
+      if (!flag) return;
+      flag = false;
+      let timer = setTimeout(() => {
+        fn();
+        flag = true;
+      }, delay);
+    };
   }
 }
 
-function throttle(fn, delay) {
-  let flag = true;
-  return () => {
-    if (!flag) return;
-    flag = false;
-    let timer = setTimeout(() => {
-      fn();
-      flag = true;
-    }, delay);
-  };
-}
